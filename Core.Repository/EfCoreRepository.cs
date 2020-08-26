@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Core.Entity;
 using Microsoft.EntityFrameworkCore;
@@ -25,6 +26,41 @@ namespace Core.Repository
             return entity;
         }
 
+        public IQueryable<TEntity> Query(bool eager = false)
+        {
+            var query = context.Set<TEntity>().AsQueryable();
+
+            if (eager)
+            {
+                foreach (var property in context.Model.FindEntityType(typeof(TEntity)).GetNavigations())
+                {
+                    query = query.Include(property.Name);
+                } 
+            }
+
+            return query;
+        }
+
+        public async Task<List<TEntity>> Get(bool eager = false)
+        {
+            return await Query(eager).ToListAsync();
+        }
+
+
+        public async Task<TEntity> Get(int id, bool eager = false)
+        {
+            return await Query(eager).SingleOrDefaultAsync(i => i.Id == id);
+        }
+        
+        public async Task<TEntity> Update(TEntity entity)
+        {
+            context.Entry(entity).State = EntityState.Modified;
+
+            await context.SaveChangesAsync();
+
+            return entity;
+        }
+
         public async Task<TEntity> Delete(int id)
         {
             var entity = await context.Set<TEntity>().FindAsync(id);
@@ -35,25 +71,6 @@ namespace Core.Repository
             }
 
             context.Set<TEntity>().Remove(entity);
-
-            await context.SaveChangesAsync();
-
-            return entity;
-        }
-
-        public async Task<TEntity> Get(int id)
-        {
-            return await context.Set<TEntity>().FindAsync(id);
-        }
-
-        public async Task<List<TEntity>> GetAll()
-        {
-            return await context.Set<TEntity>().ToListAsync();
-        }
-
-        public async Task<TEntity> Update(TEntity entity)
-        {
-            context.Entry(entity).State = EntityState.Modified;
 
             await context.SaveChangesAsync();
 
