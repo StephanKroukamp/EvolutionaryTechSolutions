@@ -19,11 +19,11 @@ namespace Core.Api
         public Startup(IHostEnvironment env)
         {
             var builder = new ConfigurationBuilder()
-             .SetBasePath(env.ContentRootPath)
-             .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
-             .AddJsonFile($"appsettings.tutorbusiness.json", optional: true)
-             .AddEnvironmentVariables();
-            
+                .SetBasePath(env.ContentRootPath)
+                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+                .AddJsonFile($"appsettings.tutorbusiness.json", optional: true)
+                .AddEnvironmentVariables();
+
             Configuration = builder.Build();
         }
 
@@ -49,7 +49,7 @@ namespace Core.Api
                     Description = "JWT containing userid claim",
                     Name = "Authorization",
                     In = ParameterLocation.Header,
-                    Type = SecuritySchemeType.ApiKey,
+                    Type = SecuritySchemeType.ApiKey
                 });
 
                 var security = new OpenApiSecurityRequirement
@@ -96,11 +96,11 @@ namespace Core.Api
 
             app.UseSwagger();
 
-            app.UseSwaggerUI(c =>
+            app.UseSwaggerUI(options =>
             {
-                c.RoutePrefix = "";
+                options.RoutePrefix = "";
 
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Evolutionary Tech Solutions V1");
+                options.SwaggerEndpoint("/swagger/v1/swagger.json", "Evolutionary Tech Solutions V1");
             });
         }
     }
