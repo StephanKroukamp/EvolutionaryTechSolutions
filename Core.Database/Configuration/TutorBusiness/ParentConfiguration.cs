@@ -6,7 +6,7 @@ namespace Core.Database.Configuration.TutorBusiness
 {
     internal class ParentConfiguration : IEntityTypeConfiguration<Parent>
     {
-        private const string TableName = "parents";
+        private const string TableName = "parent";
 
         public void Configure(EntityTypeBuilder<Parent> builder)
         {

@@ -6,7 +6,7 @@ namespace Core.Database.Configuration.TutorBusiness
 {
     internal class StudentConfiguration : IEntityTypeConfiguration<Student>
     {
-        private const string TableName = "students";
+        private const string TableName = "student";
 
         public void Configure(EntityTypeBuilder<Student> builder)
         {
