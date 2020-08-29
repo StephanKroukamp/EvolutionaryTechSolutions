@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Core.Database.TutorBusiness
 {
-    public class TutorBusinessDbContext : IdentityDbContext<ApplicationUser, IdentityRole<int>, int>
+    public class TutorBusinessDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, int>
     {
         public TutorBusinessDbContext(DbContextOptions<TutorBusinessDbContext> options) : base(options)
         {
@@ -22,14 +22,16 @@ namespace Core.Database.TutorBusiness
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<IdentityRole<int>>().ToTable("identity_role");
-            modelBuilder.Entity<ApplicationUser>().ToTable("identity_user");
-            modelBuilder.Entity<IdentityRoleClaim<int>>().ToTable("identity_role_claim");
-            modelBuilder.Entity<IdentityUserClaim<int>>().ToTable("identity_user_claim");
-            modelBuilder.Entity<IdentityUserRole<int>>().ToTable("identity_user_role");
-            modelBuilder.Entity<IdentityUserLogin<int>>().ToTable("identity_user_login");
-            modelBuilder.Entity<IdentityUserToken<int>>().ToTable("identity_user_token");
+            // Auth
+            modelBuilder.Entity<ApplicationRole>().ToTable("application_role");
+            modelBuilder.Entity<ApplicationUser>().ToTable("application_user");
+            modelBuilder.Entity<IdentityRoleClaim<int>>().ToTable("application_role_claim");
+            modelBuilder.Entity<IdentityUserClaim<int>>().ToTable("application_user_claim");
+            modelBuilder.Entity<IdentityUserRole<int>>().ToTable("application_user_role");
+            modelBuilder.Entity<IdentityUserLogin<int>>().ToTable("application_user_login");
+            modelBuilder.Entity<IdentityUserToken<int>>().ToTable("application_user_token");
 
+            // Tutor Business
             modelBuilder.ApplyConfiguration(new ParentConfiguration());
 
             modelBuilder.ApplyConfiguration(new StudentConfiguration());
