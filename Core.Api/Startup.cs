@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Core.Api.Extensions;
 using Core.Api.Settings;
 using Core.Api.Validators.MusicStore;
 using Core.Api.Validators.TutorBusiness;
@@ -110,6 +111,10 @@ namespace Core.Api
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            string aspNetCoreEnvironment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+
+            app.Seed(aspNetCoreEnvironment);
 
             app.UseHttpsRedirection();
 

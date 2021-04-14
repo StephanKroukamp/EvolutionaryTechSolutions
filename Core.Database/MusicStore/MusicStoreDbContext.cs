@@ -31,19 +31,6 @@ namespace Core.Database.MusicStore
 
             // Music Store
             modelBuilder.ApplyConfiguration(new ArtistConfiguration());
-
-            //modelBuilder.Entity<Artist>().HasData(
-            //    new Artist { Id = 1, Name = "Camel Power Club", CoverArt = "https://picsum.photos/seed/picsum/300/300" },
-            //    new Artist { Id = 2, Name = "Mind Against", CoverArt = "https://picsum.photos/seed/picsum/300/300" },
-            //    new Artist { Id = 3, Name = "Tale Of Us", CoverArt = "https://picsum.photos/seed/picsum/300/300" },
-            //    new Artist { Id = 4, Name = "Lamb Of God", CoverArt = "https://picsum.photos/seed/picsum/300/300" },
-            //    new Artist { Id = 5, Name = "Bring Me The Horizon", CoverArt = "https://picsum.photos/seed/picsum/300/300" },
-            //    new Artist { Id = 6, Name = "Architects", CoverArt = "https://picsum.photos/seed/picsum/300/300" },
-            //    new Artist { Id = 7, Name = "Parkway Drive", CoverArt = "https://picsum.photos/seed/picsum/300/300" },
-            //    new Artist { Id = 8, Name = "Pink Floyd", CoverArt = "https://picsum.photos/seed/picsum/300/300" },
-            //    new Artist { Id = 9, Name = "Kygo", CoverArt = "https://picsum.photos/seed/picsum/300/300" },
-            //    new Artist { Id = 10, Name = "Ry X", CoverArt = "https://picsum.photos/seed/picsum/300/300" }
-            //);
         }
     }
 }
