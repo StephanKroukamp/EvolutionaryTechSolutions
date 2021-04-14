@@ -2,9 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Core.Api.Settings;
+using Core.Api.Validators.MusicStore;
 using Core.Api.Validators.TutorBusiness;
 using Core.Auth;
 using Core.Database.TutorBusiness;
+using Core.Repository.MusicStore;
 using Core.Repository.TutorBusiness;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -29,6 +31,7 @@ namespace Core.Api
                 .SetBasePath(env.ContentRootPath)
                 .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
                 .AddJsonFile($"appsettings.tutorbusiness.json", optional: true)
+                .AddJsonFile($"appsettings.musicstore.json", optional: true)
                 .AddEnvironmentVariables();
 
             Configuration = builder.Build();
@@ -57,13 +60,17 @@ namespace Core.Api
                 .AddEntityFrameworkStores<TutorBusinessDbContext>()
                 .AddDefaultTokenProviders();
 
-            // Repositores
+            // Tutor Business
             services.AddScoped<ParentRepository>();
             services.AddScoped<StudentRepository>();
 
-            // Validators
             services.AddScoped<ParentValidator>();
             services.AddScoped<StudentValidator>();
+
+            // Music Store
+            services.AddScoped<ArtistRepository>();
+
+            services.AddScoped<ArtistValidator>();
 
             services.AddSwaggerGen(options =>
             {
