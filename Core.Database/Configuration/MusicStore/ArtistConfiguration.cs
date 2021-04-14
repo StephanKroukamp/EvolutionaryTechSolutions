@@ -27,7 +27,8 @@ namespace Core.Database.Configuration.MusicStore
 
             builder
                 .Property(artist => artist.CoverArt)
-                .IsRequired();
+                .IsRequired()
+                .HasMaxLength(1000);
         }
     }
 }

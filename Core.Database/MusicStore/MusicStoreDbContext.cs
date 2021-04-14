@@ -1,6 +1,5 @@
 ﻿using Core.Auth;
 using Core.Database.Configuration.MusicStore;
-using Core.Database.Configuration.TutorBusiness;
 using Core.Entity.MusicStore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;

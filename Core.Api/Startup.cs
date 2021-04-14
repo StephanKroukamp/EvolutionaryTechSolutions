@@ -4,14 +4,13 @@ using System.Text;
 using Core.Api.Settings;
 using Core.Api.Validators.MusicStore;
 using Core.Api.Validators.TutorBusiness;
-using Core.Auth;
+using Core.Database.MusicStore;
 using Core.Database.TutorBusiness;
 using Core.Repository.MusicStore;
 using Core.Repository.TutorBusiness;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -39,42 +38,51 @@ namespace Core.Api
 
         public void ConfigureServices(IServiceCollection services)
         {
-            // Settings
             services.Configure<JwtSettings>(Configuration.GetSection("Jwt"));
+
 
             JwtSettings jwtSettings = Configuration.GetSection("Jwt").Get<JwtSettings>();
 
-            // Database Context
-            services.AddDbContext<TutorBusinessDbContext>(options => options.UseMySql(Configuration.GetConnectionString("DefaultConnection")));
+            string aspNetCoreEnvironment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
 
+            if (aspNetCoreEnvironment.Equals(Settings.Environments.TutorBusiness.ToString()))
+            {
+                services.AddDbContext<TutorBusinessDbContext>(options => options.UseMySql(Configuration.GetConnectionString("DefaultConnection")));
+
+                services.AddScoped<ParentRepository>();
+                services.AddScoped<StudentRepository>();
+
+                services.AddScoped<ParentValidator>();
+                services.AddScoped<StudentValidator>();
+
+            }
+            else if (aspNetCoreEnvironment.Equals(Settings.Environments.MusicStore.ToString()))
+            {
+                services.AddDbContext<MusicStoreDbContext>(options => options.UseMySql(Configuration.GetConnectionString("DefaultConnection")));
+
+                services.AddScoped<ArtistRepository>();
+
+                services.AddScoped<ArtistValidator>();
+            }
+
+            //TODO: implement auth properly
             // Auth
-            services
-                .AddIdentity<ApplicationUser, ApplicationRole>(options =>
-                {
-                    options.Password.RequiredLength = 8;
-                    options.Password.RequireNonAlphanumeric = true;
-                    options.Password.RequireUppercase = true;
-                    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(1d);
-                    options.Lockout.MaxFailedAccessAttempts = 5;
-                })
-                .AddEntityFrameworkStores<TutorBusinessDbContext>()
-                .AddDefaultTokenProviders();
-
-            // Tutor Business
-            services.AddScoped<ParentRepository>();
-            services.AddScoped<StudentRepository>();
-
-            services.AddScoped<ParentValidator>();
-            services.AddScoped<StudentValidator>();
-
-            // Music Store
-            services.AddScoped<ArtistRepository>();
-
-            services.AddScoped<ArtistValidator>();
+            //services
+            //    .AddIdentity<ApplicationUser, ApplicationRole>(options =>
+            //    {
+            //        options.Password.RequiredLength = 8;
+            //        options.Password.RequireNonAlphanumeric = true;
+            //        options.Password.RequireUppercase = true;
+            //        options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(1d);
+            //        options.Lockout.MaxFailedAccessAttempts = 5;
+            //    })
+            //    .AddEntityFrameworkStores<MusicStoreDbContext>()
+            //    .AddDefaultTokenProviders();
 
             services.AddSwaggerGen(options =>
             {
-                options.SwaggerDoc("v1", new OpenApiInfo { Title = "Entity Tech Solutions", Version = "v1" });
+                options.SwaggerDoc("TutorBusiness", new OpenApiInfo { Title = "Tutor Business", Version = "v1" });
+                options.SwaggerDoc("MusicStore", new OpenApiInfo { Title = "Music Store", Version = "v1" });
 
                 options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
@@ -150,9 +158,8 @@ namespace Core.Api
 
             app.UseSwaggerUI(options =>
             {
-                options.RoutePrefix = "";
-
-                options.SwaggerEndpoint("/swagger/v1/swagger.json", "Evolutionary Tech Solutions V1");
+                options.SwaggerEndpoint("../swagger/TutorBusiness/swagger.json", "Tutor Business");
+                options.SwaggerEndpoint("../swagger/MusicStore/swagger.json", "Music Store");
             });
         }
     }

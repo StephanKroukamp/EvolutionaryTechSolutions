@@ -9,21 +9,22 @@
     }
   },
   "profiles": {
-    "IIS Express": {
-      "commandName": "IISExpress",
-      "launchBrowser": true,
-      "launchUrl": "",
-      "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
-      }
-    },
-    "TutorBusiness.API": {
+    "TutorBusiness": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "",
+      "launchUrl": "swagger/TutorBusiness/swagger.json",
       "applicationUrl": "https://localhost:5001;http://localhost:5000",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "TutorBusiness"
+      }
+    },
+    "MusicStore": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "launchUrl": "swagger/MusicStore/swagger.json",
+      "applicationUrl": "https://localhost:5001;http://localhost:5000",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "MusicStore"
       }
     }
   }

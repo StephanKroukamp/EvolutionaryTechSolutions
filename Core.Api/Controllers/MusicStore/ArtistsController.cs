@@ -7,6 +7,7 @@ namespace Core.Api.Controllers.MusicStore
 {
     [Route("api/[controller]")]
     [ApiController]
+    [ApiExplorerSettings(GroupName = "MusicStore")]
     public class ArtistsController : EfCoreController<Artist, ArtistRepository, ArtistValidator>
     {
         public ArtistsController(ArtistRepository repository, ArtistValidator validator) : base(repository, validator)

@@ -7,6 +7,7 @@ namespace Core.Api.Controllers.TutorBusiness
 {
     [Route("api/[controller]")]
     [ApiController]
+    [ApiExplorerSettings(GroupName = "TutorBusiness")]
     public class ParentsController : EfCoreController<Parent, ParentRepository, ParentValidator>
     {
         public ParentsController(ParentRepository repository, ParentValidator validator) : base(repository, validator)
