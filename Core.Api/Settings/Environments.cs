@@ -1,8 +1,8 @@
 ﻿namespace Core.Api.Settings
 {
-    public enum Environments
+    public static class Environments
     {
-        TutorBusiness,
-        MusicStore
+        public const string TutorBusiness = "tutorbusiness";
+        public const string MusicStore = "musicstore";
     }
 }

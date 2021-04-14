@@ -22,32 +22,26 @@ namespace Core.Api
 {
     public class Startup
     {
-        public IConfiguration Configuration { get; }
+        public IConfiguration configuration { get; }
 
-        public Startup(IHostEnvironment env)
+        public Startup(IConfiguration configuration)
         {
-            var builder = new ConfigurationBuilder()
-                .SetBasePath(env.ContentRootPath)
-                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
-                .AddJsonFile($"appsettings.tutorbusiness.json", optional: true)
-                .AddJsonFile($"appsettings.musicstore.json", optional: true)
-                .AddEnvironmentVariables();
-
-            Configuration = builder.Build();
+            this.configuration = configuration;
         }
-
+        
         public void ConfigureServices(IServiceCollection services)
         {
-            services.Configure<JwtSettings>(Configuration.GetSection("Jwt"));
+            services.Configure<JwtSettings>(configuration.GetSection("Jwt"));
 
-
-            JwtSettings jwtSettings = Configuration.GetSection("Jwt").Get<JwtSettings>();
+            JwtSettings jwtSettings = configuration.GetSection("Jwt").Get<JwtSettings>();
 
             string aspNetCoreEnvironment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
 
-            if (aspNetCoreEnvironment.Equals(Settings.Environments.TutorBusiness.ToString()))
+            string defaultConnection = configuration.GetConnectionString("DefaultConnection");
+
+            if (aspNetCoreEnvironment.Equals(Settings.Environments.TutorBusiness))
             {
-                services.AddDbContext<TutorBusinessDbContext>(options => options.UseMySql(Configuration.GetConnectionString("DefaultConnection")));
+                services.AddDbContext<TutorBusinessDbContext>(options => options.UseMySql(defaultConnection));
 
                 services.AddScoped<ParentRepository>();
                 services.AddScoped<StudentRepository>();
@@ -56,9 +50,9 @@ namespace Core.Api
                 services.AddScoped<StudentValidator>();
 
             }
-            else if (aspNetCoreEnvironment.Equals(Settings.Environments.MusicStore.ToString()))
+            else if (aspNetCoreEnvironment.Equals(Settings.Environments.MusicStore))
             {
-                services.AddDbContext<MusicStoreDbContext>(options => options.UseMySql(Configuration.GetConnectionString("DefaultConnection")));
+                services.AddDbContext<MusicStoreDbContext>(options => options.UseMySql(defaultConnection));
 
                 services.AddScoped<ArtistRepository>();
 
@@ -66,7 +60,7 @@ namespace Core.Api
             }
 
             //TODO: implement auth properly
-            // Auth
+
             //services
             //    .AddIdentity<ApplicationUser, ApplicationRole>(options =>
             //    {
@@ -83,32 +77,6 @@ namespace Core.Api
             {
                 options.SwaggerDoc("TutorBusiness", new OpenApiInfo { Title = "Tutor Business", Version = "v1" });
                 options.SwaggerDoc("MusicStore", new OpenApiInfo { Title = "Music Store", Version = "v1" });
-
-                options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-                {
-                    Description = "JWT containing userid claim",
-                    Name = "Authorization",
-                    In = ParameterLocation.Header,
-                    Type = SecuritySchemeType.ApiKey
-                });
-
-                var security = new OpenApiSecurityRequirement
-                {
-                    {
-                        new OpenApiSecurityScheme
-                        {
-                            Reference = new OpenApiReference
-                            {
-                                Id = "Bearer",
-                                Type = ReferenceType.SecurityScheme
-                            },
-                            UnresolvedReference = true
-                        },
-                        new List<string>()
-                    }
-                };
-
-                options.AddSecurityRequirement(security);
             });
 
             services
@@ -131,9 +99,9 @@ namespace Core.Api
                     };
                 });
 
-            services.AddControllers().AddNewtonsoftJson(options =>
-                options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
-            );
+            services
+                .AddControllers()
+                .AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -158,6 +126,8 @@ namespace Core.Api
 
             app.UseSwaggerUI(options =>
             {
+                options.RoutePrefix = "";
+
                 options.SwaggerEndpoint("../swagger/TutorBusiness/swagger.json", "Tutor Business");
                 options.SwaggerEndpoint("../swagger/MusicStore/swagger.json", "Music Store");
             });

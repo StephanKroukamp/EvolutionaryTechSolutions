@@ -12,19 +12,19 @@
     "TutorBusiness": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "swagger/TutorBusiness/swagger.json",
+      "launchUrl": "",
       "applicationUrl": "https://localhost:5001;http://localhost:5000",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "TutorBusiness"
+        "ASPNETCORE_ENVIRONMENT": "tutorbusiness"
       }
     },
     "MusicStore": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "swagger/MusicStore/swagger.json",
+      "launchUrl": "",
       "applicationUrl": "https://localhost:5001;http://localhost:5000",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "MusicStore"
+        "ASPNETCORE_ENVIRONMENT": "musicstore"
       }
     }
   }
