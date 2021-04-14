@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Core.Api.Extensions;
+using Core.Api.Extensions.MusicStore;
+using Core.Api.Extensions.TutorBusiness;
 using Core.Api.Settings;
 using Core.Api.Validators.MusicStore;
 using Core.Api.Validators.TutorBusiness;
@@ -36,9 +38,9 @@ namespace Core.Api
 
             JwtSettings jwtSettings = configuration.GetSection("Jwt").Get<JwtSettings>();
 
-            string aspNetCoreEnvironment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
-
             string defaultConnection = configuration.GetConnectionString("DefaultConnection");
+
+            string aspNetCoreEnvironment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
 
             if (aspNetCoreEnvironment.Equals(Settings.Environments.TutorBusiness))
             {
@@ -114,7 +116,14 @@ namespace Core.Api
 
             string aspNetCoreEnvironment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
 
-            app.Seed(aspNetCoreEnvironment);
+            if (aspNetCoreEnvironment.Equals(Settings.Environments.TutorBusiness))
+            {
+                app.SeedTutorBusiness();
+            }
+            else if (aspNetCoreEnvironment.Equals(Settings.Environments.MusicStore))
+            {
+                app.SeedMusicStore();
+            }
 
             app.UseHttpsRedirection();
 
