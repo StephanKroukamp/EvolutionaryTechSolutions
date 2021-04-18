@@ -1,14 +1,10 @@
 using System;
 using System.Text;
 using Core.Api.Extensions.MusicStore;
-using Core.Api.Extensions.TutorBusiness;
 using Core.Api.Settings;
 using Core.Api.Validators.MusicStore;
-using Core.Api.Validators.TutorBusiness;
 using Core.Database.MusicStore;
-using Core.Database.TutorBusiness;
 using Core.Repository.MusicStore;
-using Core.Repository.TutorBusiness;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -50,18 +46,7 @@ namespace Core.Api
 
             string aspNetCoreEnvironment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
 
-            if (aspNetCoreEnvironment.Equals(Environments.TutorBusiness))
-            {
-                services.AddDbContext<TutorBusinessDbContext>(options => options.UseMySql(defaultConnection));
-
-                services.AddScoped<ParentRepository>();
-                services.AddScoped<StudentRepository>();
-
-                services.AddScoped<ParentValidator>();
-                services.AddScoped<StudentValidator>();
-
-            }
-            else if (aspNetCoreEnvironment.Equals(Environments.MusicStore))
+            if (aspNetCoreEnvironment.Equals(Environments.MusicStore))
             {
                 services.AddDbContext<MusicStoreDbContext>(options => options.UseMySql(defaultConnection));
 
@@ -86,7 +71,6 @@ namespace Core.Api
 
             services.AddSwaggerGen(options =>
             {
-                options.SwaggerDoc("TutorBusiness", new OpenApiInfo { Title = "Tutor Business", Version = "v1" });
                 options.SwaggerDoc("MusicStore", new OpenApiInfo { Title = "Music Store", Version = "v1" });
             });
 
@@ -124,11 +108,7 @@ namespace Core.Api
 
             string aspNetCoreEnvironment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
 
-            if (aspNetCoreEnvironment.Equals(Environments.TutorBusiness))
-            {
-                app.SeedTutorBusiness();
-            }
-            else if (aspNetCoreEnvironment.Equals(Environments.MusicStore))
+            if (aspNetCoreEnvironment.Equals(Environments.MusicStore))
             {
                 app.SeedMusicStore();
             }
@@ -152,7 +132,6 @@ namespace Core.Api
             {
                 options.RoutePrefix = "";
 
-                options.SwaggerEndpoint("../swagger/TutorBusiness/swagger.json", "Tutor Business");
                 options.SwaggerEndpoint("../swagger/MusicStore/swagger.json", "Music Store");
             });
         }
