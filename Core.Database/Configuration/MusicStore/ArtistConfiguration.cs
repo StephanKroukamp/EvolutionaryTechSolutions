@@ -6,7 +6,7 @@ namespace Core.Database.Configuration.MusicStore
 {
     internal class ArtistConfiguration : IEntityTypeConfiguration<Artist>
     {
-        private const string TableName = "artist";
+        private const string TableName = "artists";
 
         public void Configure(EntityTypeBuilder<Artist> builder)
         {
@@ -21,12 +21,12 @@ namespace Core.Database.Configuration.MusicStore
                 .UseMySqlIdentityColumn();
 
             builder
-                .Property(artist => artist.Name)
+                .Property(artist => artist.Title)
                 .IsRequired()
-                .HasMaxLength(50);
+                .HasMaxLength(1000);
 
             builder
-                .Property(artist => artist.CoverArt)
+                .Property(artist => artist.Description)
                 .IsRequired()
                 .HasMaxLength(1000);
         }

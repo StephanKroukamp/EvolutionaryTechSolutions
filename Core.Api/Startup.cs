@@ -1,7 +1,5 @@
 using System;
-using System.Collections.Generic;
 using System.Text;
-using Core.Api.Extensions;
 using Core.Api.Extensions.MusicStore;
 using Core.Api.Extensions.TutorBusiness;
 using Core.Api.Settings;
@@ -17,7 +15,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
@@ -31,18 +28,29 @@ namespace Core.Api
         {
             this.configuration = configuration;
         }
-        
+
         public void ConfigureServices(IServiceCollection services)
         {
+            services.Configure<CorsSettings>(configuration.GetSection("Cors"));
             services.Configure<JwtSettings>(configuration.GetSection("Jwt"));
 
+            CorsSettings corsSettings = configuration.GetSection("Cors").Get<CorsSettings>();
             JwtSettings jwtSettings = configuration.GetSection("Jwt").Get<JwtSettings>();
+
+            services.AddCors(o => o.AddPolicy("CorsPolicy", builder =>
+            {
+                builder
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                .AllowCredentials()
+                .WithOrigins(corsSettings.FrontEndBaseUrl);
+            }));
 
             string defaultConnection = configuration.GetConnectionString("DefaultConnection");
 
             string aspNetCoreEnvironment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
 
-            if (aspNetCoreEnvironment.Equals(Settings.Environments.TutorBusiness))
+            if (aspNetCoreEnvironment.Equals(Environments.TutorBusiness))
             {
                 services.AddDbContext<TutorBusinessDbContext>(options => options.UseMySql(defaultConnection));
 
@@ -53,7 +61,7 @@ namespace Core.Api
                 services.AddScoped<StudentValidator>();
 
             }
-            else if (aspNetCoreEnvironment.Equals(Settings.Environments.MusicStore))
+            else if (aspNetCoreEnvironment.Equals(Environments.MusicStore))
             {
                 services.AddDbContext<MusicStoreDbContext>(options => options.UseMySql(defaultConnection));
 
@@ -109,27 +117,29 @@ namespace Core.Api
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
+            //if (env.IsDevelopment())
+            //{
+            //    app.UseDeveloperExceptionPage();
+            //}
 
             string aspNetCoreEnvironment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
 
-            if (aspNetCoreEnvironment.Equals(Settings.Environments.TutorBusiness))
+            if (aspNetCoreEnvironment.Equals(Environments.TutorBusiness))
             {
                 app.SeedTutorBusiness();
             }
-            else if (aspNetCoreEnvironment.Equals(Settings.Environments.MusicStore))
+            else if (aspNetCoreEnvironment.Equals(Environments.MusicStore))
             {
                 app.SeedMusicStore();
             }
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
 
             app.UseRouting();
 
             app.UseAuthorization();
+
+            app.UseCors("CorsPolicy");
 
             app.UseEndpoints(endpoints =>
             {

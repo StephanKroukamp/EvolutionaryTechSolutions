@@ -43,9 +43,10 @@ namespace Core.Repository
 
         public async Task<List<TEntity>> Get(bool eager = false)
         {
-            return await Query(eager).ToListAsync();
+            List<TEntity> entities = await Query(eager).ToListAsync();
+            
+            return entities;
         }
-
 
         public async Task<TEntity> Get(int id, bool eager = false)
         {

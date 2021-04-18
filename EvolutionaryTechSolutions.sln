@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core.Database", "Core.Datab
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core.Entity", "Core.Entity\Core.Entity.csproj", "{6E4348BF-7094-4EF4-89BD-8D899E908328}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Auth", "Core.Auth\Core.Auth.csproj", "{9151B181-561D-4F11-80F3-C861D14FD029}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core.Auth", "Core.Auth\Core.Auth.csproj", "{9151B181-561D-4F11-80F3-C861D14FD029}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -7,14 +7,13 @@ namespace Core.Api.Validators.MusicStore
     {
         public ArtistValidator()
         {
-            RuleFor(artist => artist.Name)
+            RuleFor(artist => artist.Title)
                 .NotEmpty()
-                .MaximumLength(50)
-                .WithMessage("'Name' is required & must not be less than 50 characters");
+                .WithMessage("'Title' is required");
 
-            RuleFor(artist => artist.CoverArt)
+            RuleFor(artist => artist.Description)
                 .NotEmpty()
-                .WithMessage("'CoverArt' is required");
+                .WithMessage("'Description' is required");
         }
     }
 }
