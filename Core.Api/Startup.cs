@@ -1,14 +1,12 @@
-using System;
+﻿using System;
+using System.Collections.Generic;
 using System.Text;
-using Core.Api.Extensions.MusicStore;
 using Core.Api.Settings;
-using Core.Api.Validators.MusicStore;
 using Core.Database.MusicStore;
-using Core.Repository.MusicStore;
+using Google.Cloud.Firestore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
@@ -42,32 +40,19 @@ namespace Core.Api
                 .WithOrigins(corsSettings.FrontEndBaseUrl);
             }));
 
-            string defaultConnection = configuration.GetConnectionString("DefaultConnection");
+
+            FirestoreDb firestoreDb = FirestoreDb.Create("musicstore-e007c");
+
+            services.AddSingleton<FirestoreDb>(provider => firestoreDb);
+
+            services.AddScoped<ArtistRepository>();
 
             string aspNetCoreEnvironment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
 
             if (aspNetCoreEnvironment.Equals(Environments.MusicStore))
             {
-                services.AddDbContext<MusicStoreDbContext>(options => options.UseMySql(defaultConnection));
 
-                services.AddScoped<ArtistRepository>();
-
-                services.AddScoped<ArtistValidator>();
             }
-
-            //TODO: implement auth properly
-
-            //services
-            //    .AddIdentity<ApplicationUser, ApplicationRole>(options =>
-            //    {
-            //        options.Password.RequiredLength = 8;
-            //        options.Password.RequireNonAlphanumeric = true;
-            //        options.Password.RequireUppercase = true;
-            //        options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(1d);
-            //        options.Lockout.MaxFailedAccessAttempts = 5;
-            //    })
-            //    .AddEntityFrameworkStores<MusicStoreDbContext>()
-            //    .AddDefaultTokenProviders();
 
             services.AddSwaggerGen(options =>
             {
@@ -110,10 +95,10 @@ namespace Core.Api
 
             if (aspNetCoreEnvironment.Equals(Environments.MusicStore))
             {
-                app.SeedMusicStore();
+
             }
 
-            //app.UseHttpsRedirection();
+            app.UseHttpsRedirection();
 
             app.UseRouting();
 
